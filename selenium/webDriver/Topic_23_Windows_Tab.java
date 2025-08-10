@@ -3,6 +3,7 @@ package webDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -65,6 +66,42 @@ public class Topic_23_Windows_Tab {
 
     }
 
+
+    @Test
+    public void TC_02_TechPanda() throws InterruptedException {
+
+        driver.get("http://live.techpanda.org/");
+        driver.findElement(By.xpath("//a[text()='Mobile']")).click();
+        //click add to compare xperia
+        driver.findElement(By.xpath("//a[text()='Sony Xperia']" +
+                "/parent::h2/following-sibling::div[@class='actions']//a[text()='Add to Compare']")).click();
+        driver.findElement(By.cssSelector("li.success-msg span")).getText();
+        Assert.assertEquals(driver.findElement(By.cssSelector("li.success-msg span")).getText(),
+                "The product Sony Xperia has been added to comparison list.");
+        // click add to compare galaxy
+        driver.findElement(By.xpath("//a[text()='Samsung Galaxy']" +
+                "/parent::h2/following-sibling::div[@class='actions']//a[text()='Add to Compare']")).click();
+        driver.findElement(By.cssSelector("li.success-msg span")).getText();
+        Assert.assertEquals(driver.findElement(By.cssSelector("li.success-msg span")).getText(),
+                "The product Samsung Galaxy has been added to comparison list.");
+
+        driver.findElement(By.xpath("//button[@title='Compare']")).click();
+        switchToWindowByTitle("Products Comparison List - Magento Commerce");
+        Assert.assertEquals(driver.getTitle(), "Products Comparison List - Magento Commerce");
+        driver.findElement(By.xpath("//button[@title='Close Window']")).click();
+        Thread.sleep(2000);
+        switchToWindowByTitle("Mobile");
+        Thread.sleep(2000);
+
+        driver.findElement(By.xpath("//a[text()='Clear All']")).click();
+        Thread.sleep(2000);
+        Assert.assertEquals(driver.switchTo().alert().getText(),
+                "Are you sure you would like to remove all products from your comparison?");
+        driver.switchTo().alert().accept();
+        Thread.sleep(3000);
+        Assert.assertEquals(driver.findElement(By.cssSelector("li.success-msg span")).getText(),
+                "The comparison list was cleared.");
+    }
     private void closeAllWindows(String githubWindowID) throws InterruptedException {
         // lấy hết toàn bộ các ID của window/ tab
         Set<String> allWindows = driver.getWindowHandles();
@@ -108,11 +145,6 @@ public class Topic_23_Windows_Tab {
                 break;
             }
         }
-    }
-
-    @Test
-    public void TC_02(){
-
     }
 
     @AfterClass
