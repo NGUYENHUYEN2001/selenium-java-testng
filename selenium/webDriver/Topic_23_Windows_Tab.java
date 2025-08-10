@@ -117,7 +117,8 @@ public class Topic_23_Windows_Tab {
 
     @AfterClass
     public void cleanBrowser(){
-        driver.quit(); //dong trinh duyet
+
+        driver.quit();
     }
 
 
