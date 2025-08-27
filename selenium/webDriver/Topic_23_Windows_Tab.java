@@ -1,7 +1,9 @@
 package webDriver;
 
+import com.beust.ah.A;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -101,6 +103,80 @@ public class Topic_23_Windows_Tab {
         Thread.sleep(3000);
         Assert.assertEquals(driver.findElement(By.cssSelector("li.success-msg span")).getText(),
                 "The comparison list was cleared.");
+    }
+    @Test
+    public void TC_03_Cambridge() throws InterruptedException {
+        driver.get("https://dictionary.cambridge.org/vi/");
+        driver.findElement(By.cssSelector("span.cdo-login-button")).click();
+        Thread.sleep(2000);
+
+        switchToWindowByTitle("Login");
+        Thread.sleep(5000);
+
+        driver.findElement(By.cssSelector("input[value='Log in']")).click();
+
+        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='username']~span.gigya-error-msg-active")).getText(),
+                "This field is required");
+        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='password']~span.gigya-error-msg-active")).getText(),
+                "This field is required");
+        driver.close();
+        switchToWindowByTitle("Cambridge Dictionary | Từ điển tiếng Anh, Bản dịch & Từ điển từ đồng nghĩa");
+        Thread.sleep(2000);
+
+        driver.findElement(By.cssSelector("input#searchword")).sendKeys("code");
+        driver.findElement(By.cssSelector("button[title='Tìm kiếm']")).click();
+        Thread.sleep(2000);
+
+
+        Assert.assertEquals(driver.findElement(By.cssSelector("div#cald4-1~div span.headword>span")).getText(),
+                "code");
+
+
+    }
+    @Test
+    public void TC_04_Selenium_4x() throws InterruptedException {
+        driver.get("http://live.techpanda.org/");
+        driver.findElement(By.xpath("//a[text()='Mobile']")).click();
+        Thread.sleep(2000);
+        System.out.println("Driver ID " + driver.toString());
+        System.out.println("Window ID " + driver.getWindowHandle());
+        System.out.println(driver.getTitle());
+        System.out.println(driver.getCurrentUrl());
+
+        // hanh vi nay giong end user thao tác,
+        // khi nhảy qua tab mới nó tự switch qua
+        driver.switchTo().newWindow(WindowType.TAB).get("https://live.techpanda.org/index.php/customer/account/login/");
+        Thread.sleep(2000);
+        System.out.println("Driver ID " + driver.toString());
+        System.out.println("Window ID " + driver.getWindowHandle());
+        System.out.println(driver.getTitle());
+        System.out.println(driver.getCurrentUrl());
+
+        driver.findElement(By.cssSelector("button#send2")).click();
+        Assert.assertEquals(driver.findElement(By.cssSelector("div#advice-required-entry-email")).getText(),"This is a required field.");
+
+        switchToWindowByTitle("Mobile");
+        Thread.sleep(2000);
+
+    }
+    @Test
+    public void harvard() throws InterruptedException {
+        driver.get("https://courses.dce.harvard.edu/");
+        driver.findElement(By.cssSelector("a.anon-only")).click();
+
+        switchToWindowByTitle("Harvard Division of Continuing Education Login Portal");
+        Thread.sleep(2000);
+        Assert.assertEquals(driver.getTitle(), "Harvard Division of Continuing Education Login Portal");
+
+        driver.close();
+        switchToWindowByTitle("DCE Course Search");
+        Assert.assertEquals(driver.findElement(By.cssSelector("p.sam-wait__message")).getText(), "Authentication was not successful.  Please try again.");
+
+        driver.findElement(By.xpath("//span[text()='Close']")).click();
+        driver.findElement(By.cssSelector("input#crit-keyword")).sendKeys("Understanding Race and Racism");
+        driver.findElement(By.cssSelector("button#search-button-sticky")).click();
+        Assert.assertEquals(driver.findElement(By.cssSelector("span.result__title")).getText(),"Understanding Race and Racism");
+
     }
     private void closeAllWindows(String githubWindowID) throws InterruptedException {
         // lấy hết toàn bộ các ID của window/ tab
